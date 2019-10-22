@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from hill_climbing import * 
 import random
 import math
@@ -30,7 +29,7 @@ def bestStates(statesList, types, k):
 def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #maxGen, populationSize):
     population = [randomState(types, maxSize) for x in range(populationSize)]
     #print(population)
-    populationValues = [stateValue(x, types) for x in population]
+    #populationValues = [stateValue(x, types) for x in population]
     #print(parentStates)
     #inert = 0
     while(maxGen > 0): #and inert < 5):
@@ -54,7 +53,7 @@ def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #m
         ratio.reverse()
         parentStates.reverse()
         #print(ratio)
-        for j in range(populationSize - elit):
+        for _ in range(populationSize - elit):
             prob = random.random()
             for i in range(len(ratio)-1):
                 if(prob <= ratio[i]):
@@ -108,7 +107,7 @@ def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #m
         parentStates.reverse()
         maxGen -= 1
         print(population, maxGen)
-        values = [stateValue(x, types) for x in population]
+        #values = [stateValue(x, types) for x in population]
         # if max(values) <= max(parentValues):
         #     inert += 1
 
@@ -119,23 +118,3 @@ def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #m
 nha = genetic(TIPOS, 19, 10, 20, 0.95, 0.1)
 value = stateValue(nha, TIPOS)
 print("Best state: ", nha, value)
-=======
-from hill_climbing import *
-import random
-
-# gera populaçao inicial
-# avaliar individuos
-# enquanto não atende ao criterio de parada
-#     coloca individuo mais adaptado na nova geracao
-#     seleciona pais
-#     realiza crossover
-#     realiza mutacao
-#     avalia individuos
-# fim enq
-# retorna mais adaptado
-
-
-TIPOS = [ (1,3), (4,6), (5,7) ]
-
-def genetic(types, max_size, n):
->>>>>>> b5b941e56fde4f0e86f4ceb2038ad5a46e7cde62

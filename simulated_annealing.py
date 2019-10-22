@@ -30,6 +30,25 @@ def simulated_annealing(types, maxsize, numiter, t, nmax):
         t = alpha*t
     return state
 
+def simulated_annealing_2(types, maxsize, numiter, t, nmax, initial):
+    trivial = hillClimb(TIPOS, maxsize)
+    alpha = random.random()
+    state = initial
+    for j in range(0, nmax):
+        for i in range(0, numiter):
+            neighbor = getNeighbor(state, types, maxsize)
+            if stateValue(neighbor, types) > stateValue(state, types):
+                state = neighbor
+                if stateValue(state, types) > stateValue(trivial, types):
+                    trivial = state
+            else:
+                prob = probability(state, neighbor, types, t)
+                aux = prob*100
+                if random.randint(0,100) < aux:
+                    state = neighbor
+        t = alpha*t
+    return state
+
 if __name__ == "__main__":
     result = simulated_annealing(TIPOS, 5000, 100, 100, 100)
     print(str(result))

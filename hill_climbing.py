@@ -30,7 +30,6 @@ def isPositiveState(state):
     return True
 
 def regressState(state):
-    indices = []
     regression = [ newListWithValueAt(state, i, state[i]-1) for i in range(len(state)) ]
     regression = list(filter(isPositiveState, regression))
     return regression
@@ -69,7 +68,7 @@ def hillClimb(types, max_size):
         for st in validStates:
             statesWithValues.append( (st, stateValue(st, types)) )
 
-        (bestState, value) = max( statesWithValues, key=lambda st: st[1] )
+        (bestState, _) = max( statesWithValues, key=lambda st: st[1] )
         #print(bestState)
 
         state = bestState
