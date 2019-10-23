@@ -18,12 +18,9 @@ def randomState(types, maxSize):
     return state
 
 def bestStates(statesList, types, k):
-    statesList.sort(key=lambda x: stateValue(x, types))
+    statesList.sort(key=lambda x: stateValue(x, types), reverse = True)
     #print(statesList)
-    bestStates = []
-    while(k > 0):
-        bestStates.append(statesList.pop())
-        k -= 1
+    bestStates = statesList[:k]
     return bestStates
 
 def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #maxGen, populationSize):
@@ -111,10 +108,13 @@ def genetic(types, maxSize, populationSize, maxGen, crossRate, mutationRate): #m
         # if max(values) <= max(parentValues):
         #     inert += 1
 
-    best_State = bestStates(population, types, 1)[0]
-    return best_State
+    best_States = bestStates(population, types, 1)
+    #print("Best States:", best_States)
+    return best_States[0]
         
 
-nha = genetic(TIPOS, 19, 10, 20, 0.95, 0.1)
-value = stateValue(nha, TIPOS)
-print("Best state: ", nha, value)
+#nha = genetic(TIPOS, 19, 10, 20, 0.95, 0.1)
+# if __name__ == "__main__":
+#     result = genetic(TIPOS, 19, 10, 20, 0.95, 0.1)
+#     print(result)
+#     print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))

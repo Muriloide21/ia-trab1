@@ -2,7 +2,8 @@ from hill_climbing import *
 
 TIPOS = [ (1,3), (4,6), (5,7) ]
 
-def beam_search(types, max_size, m):
+def beam_search(types, max_size, param):
+    (m, ) = param
     f = []
     state = [0 for i in types]
     newStates = expandState(state)
@@ -54,10 +55,10 @@ def beam_search(types, max_size, m):
 
         #print(f)
 
-if __name__ == "__main__":
-    result = beam_search(TIPOS, 19, 2)
-    print(result)
-    print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
+# if __name__ == "__main__":
+#     result = beam_search(TIPOS, 19, 2)
+#     print(result)
+#     print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
     
 
 
