@@ -25,7 +25,8 @@ def greedyRandomConstruct(types, maxSize, numBest):
         choice = random.randint(0, len(kbestStates)-1)
         state = kbestStates[choice]
 
-def grasp(types, maxSize, numIter, numBest):
+def grasp(types, maxSize, param):
+    (numIter, numBest) = param
     best_state = [0 for x in range(len(types))]
     for _ in range(numIter):
         state = greedyRandomConstruct(types, maxSize, numBest)
@@ -34,7 +35,7 @@ def grasp(types, maxSize, numIter, numBest):
             best_state = state
     return best_state
 
-if __name__ == "__main__":
-    result = grasp(TIPOS, 19, 10, 2)
-    print(result)
-    print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
+# if __name__ == "__main__":
+#     result = grasp(TIPOS, 19, 10, 2)
+#     print(result)
+#     print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))

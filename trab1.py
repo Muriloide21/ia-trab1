@@ -4,6 +4,7 @@ from simulated_annealing import *
 from genetic import genetic
 from beam_search import beam_search
 from itertools import product
+from time import time
 
 TRAIN = [
     (19, [(1,3),(4,6),(5,7)]),
@@ -31,15 +32,15 @@ TEST = [
     (4567, [(1,3),(4,6),(5,7),(3,4),(2,6),(1,2),(3,5),(7,10),(10,15),(13,20),(15,20)])
 ]
 
-BEAM_SEARCH_HYPERPARAMETERS = [[10, 25, 50, 100]]
-SA_HYPERPARAMETERS = [[500, 100, 50], [0.95, 0.85, 0.7], [350, 500]]
-GRASP_HYPERPARAMETERS = [[50, 100, 200, 350, 500], [2, 5, 10, 15]]
-GENETIC_HYPERPARAMETERS = [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]]
+# BEAM_SEARCH_HYPERPARAMETERS = [[10, 25, 50, 100]]
+# SA_HYPERPARAMETERS = [[500, 100, 50], [0.95, 0.85, 0.7], [350, 500]]
+# GRASP_HYPERPARAMETERS = [[50, 100, 200, 350, 500], [2, 5, 10, 15]]
+# GENETIC_HYPERPARAMETERS = [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]]
 
 METAHEURISTICS = [ 
     ("Hill Climbing", hillClimb, [[]]),
     ("Beam Search", beam_search, [[10, 25, 50, 100]]),
-    ("Simulated Annealing", simulated_annealing, [[50, 100, 200, 350, 500], [2, 5, 10, 15]]),
+    ("Simulated Annealing", simulated_annealing, [[500, 100, 50], [0.95, 0.85, 0.7], [350, 500]]),
     ("GRASP", grasp, [[50, 100, 200, 350, 500], [2, 5, 10, 15]]),
     ("Genetic", genetic, [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]])
 ]
@@ -49,12 +50,24 @@ def training():
         name = h[0]
         f = h[1]
         combinations = list(product(*h[2]))
+        results_per_heuristic = []
         for c in combinations:
-            for t in TRAIN:
+            results_per_combination = []
+            for t in TRAIN[:8]:
                 maxSize = t[0]
                 types = t[1]
+                start = time()
                 result = f(types, maxSize, c)
-                print(result)
-                print("Custo da solução: "+str(stateSize(result, types))+", Valor da solução: "+str(stateValue(result, types)))
+                tempo = time() - start
+                results_per_combination.append((stateValue(result, types), tempo, c))
+                # print(tempo)
+                # print(result, name)
+                # print("Custo da solução: "+str(stateSize(result, types))+", Valor da solução: "+str(stateValue(result, types)))
+            #print(results)
+            results_per_heuristic.append(results_per_combination)
+        # print(name)
+        # print(results_per_heuristic[0])
+        for result in results_per_heuristic:
+            print(result[0])
 
 training()
