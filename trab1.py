@@ -5,6 +5,8 @@ from genetic import genetic
 from beam_search import beam_search
 from itertools import product
 from time import time
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 TRAIN = [
     (19, [(1,3),(4,6),(5,7)]),
@@ -45,7 +47,20 @@ METAHEURISTICS = [
     ("Genetic", genetic, [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]])
 ]
 
+def save_plot(filename,data,x_labels):
+    fig = plt.figure() #Create the figure
+    
+    graph = sns.boxplot(data=data,showmeans=True) #Do the boxplot
+    graph.set_xticklabels(x_labels) #Label the x axe
+
+    if len(data) >= 10:
+        fig.set_size_inches(14,5) #Set the size to fit all boxplots
+        sns.set(font_scale=0.8) #Shrink the fontsize of the label
+    
+    fig.savefig(f'graficos/{filename}.eps', dpi=fig.dpi)
+
 def training():
+    hyperparameters = []
     for h in METAHEURISTICS[1:2]:
         name = h[0]
         f = h[1]
@@ -62,7 +77,6 @@ def training():
                 tempo = time() - start
                 results_per_combination.append((stateValue(result, types), tempo))
             results_per_heuristic.append(results_per_combination)
-
         results_per_problem = list(zip(*results_per_heuristic))
         best_value = 0
         best_time = 100000
@@ -74,15 +88,45 @@ def training():
             for r in p: 
                 if r[0] > best_value:
                     best_value = r[0]
-                if r[1] < best_time:
-                    best_time = r[1]
+                # if r[1] < best_time:
+                #     best_time = r[1]
             for r in p:
                 normal_value = r[0]/best_value
-                normal_time = r[1]/best_time
-                results_normalized.append(list((normal_value, normal_time)))
+                # normal_time = best_time/r[1]
+                results_normalized.append(list((normal_value, r[1])))
             results_normalized_per_problem.append(results_normalized)
-        for i in results_normalized_per_problem:
-            print(i)
+        # for i in results_normalized_per_problem:
+        #     print(i)
+        results_normalized_per_combination = list(zip(*results_normalized_per_problem))
+        print(results_normalized_per_combination)
+
+        combination_normalized_results = [
+            (list(map(lambda result: result[0],comb_results)),combinations[i_comb])
+            for i_comb,comb_results in enumerate(results_normalized_per_combination)
+        ]
+        print('\n\n\n\n',combination_normalized_results,end='\n\n\n')
+
+        data,x_labels = list(zip(*combination_normalized_results))
+        save_plot("nha", data, x_labels)
+
+        # print("---------------------------------------------")
+        import statistics as st
+        mean_combinations = []
+        for rc in results_normalized_per_combination:
+            mean_combinations.append(st.mean(list(map(lambda x:x[0],rc))))
+        #print(mean_combinations)
+        mean_normalized_per_combination = list(zip(mean_combinations, combinations))
+        # print(mean_normalized_per_combination)
+        # print(max(mean_normalized_per_combination))
+        hyperparameters.append(max(mean_normalized_per_combination))
+        sorted_means = sorted(mean_normalized_per_combination)[-10:]
+        print(sorted_means)
+
+    print(hyperparameters)
+
+
+
+
 
         
             
