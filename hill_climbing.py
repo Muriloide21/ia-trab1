@@ -1,6 +1,7 @@
 #!/bin/env python3
 
 import random
+from time import time
 
 # (valor, tamanho)
 
@@ -50,8 +51,8 @@ def getNeighbor(state, types, maxsize):
 
 def hillClimb(types, max_size):
     state = [0 for i in types]
-
-    while True:
+    start = time()
+    while (time() - start) < 120:
 
         newStates = expandState(state)
         validStates = list(

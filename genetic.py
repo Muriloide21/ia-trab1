@@ -1,6 +1,7 @@
 from hill_climbing import * 
 import random
 import math
+from time import time
 
 TIPOS = [ (1,3), (4,6), (5,7) ]
 
@@ -27,7 +28,8 @@ def genetic(types, maxSize, params): #maxGen, populationSize):
     (populationSize, crossRate, mutationRate) = params
     population = [randomState(types, maxSize) for x in range(populationSize)]
     inert = 0
-    while inert < 5:
+    start = time()
+    while inert < 5 and ((time() -start) < 120):
         elit = 1
         best_States = bestStates(population.copy(), types, elit)
 

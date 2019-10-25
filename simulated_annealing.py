@@ -1,6 +1,7 @@
 from hill_climbing import * 
 import random
 import math
+from time import time
 
 TIPOS = [ (1,3), (4,6), (5,7) ]
 
@@ -16,7 +17,8 @@ def simulated_annealing(types, maxsize, param):
     best = hillClimb(TIPOS, maxsize)
     state = [0 for i in types]
     t_min = t/20
-    while t > t_min: 
+    start = time()
+    while t > t_min and ((time() - start) < 120): 
         for _ in range(0, numiter):
             neighbor = getNeighbor(state, types, maxsize)
             if stateValue(neighbor, types) > stateValue(state, types):

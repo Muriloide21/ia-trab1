@@ -61,7 +61,7 @@ def save_plot(filename,data,x_labels):
 
 def training():
     hyperparameters = []
-    for h in METAHEURISTICS[1:2]:
+    for h in METAHEURISTICS[1:4]:
         name = h[0]
         f = h[1]
         combinations = list(product(*h[2]))
@@ -69,12 +69,14 @@ def training():
         results_per_problem = []
         for c in combinations:
             results_per_combination = []
-            for t in TRAIN[:8]:
+            for t in TRAIN:
                 maxSize = t[0]
                 types = t[1]
                 start = time()
                 result = f(types, maxSize, c)
                 tempo = time() - start
+                print(name)
+                print(stateValue(result, types), tempo)
                 results_per_combination.append((stateValue(result, types), tempo))
             results_per_heuristic.append(results_per_combination)
         results_per_problem = list(zip(*results_per_heuristic))
@@ -98,13 +100,13 @@ def training():
         # for i in results_normalized_per_problem:
         #     print(i)
         results_normalized_per_combination = list(zip(*results_normalized_per_problem))
-        print(results_normalized_per_combination)
+        #print(results_normalized_per_combination)
 
         combination_normalized_results = [
             (list(map(lambda result: result[0],comb_results)),combinations[i_comb])
             for i_comb,comb_results in enumerate(results_normalized_per_combination)
         ]
-        print('\n\n\n\n',combination_normalized_results,end='\n\n\n')
+        #print('\n\n\n\n',combination_normalized_results,end='\n\n\n')
 
         data,x_labels = list(zip(*combination_normalized_results))
         save_plot("nha", data, x_labels)
@@ -119,8 +121,9 @@ def training():
         # print(mean_normalized_per_combination)
         # print(max(mean_normalized_per_combination))
         hyperparameters.append(max(mean_normalized_per_combination))
+        print(max(mean_normalized_per_combination))
         sorted_means = sorted(mean_normalized_per_combination)[-10:]
-        print(sorted_means)
+        #print(sorted_means)
 
     print(hyperparameters)
 

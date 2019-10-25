@@ -3,6 +3,7 @@ from simulated_annealing import *
 from genetic import *
 import random
 import math
+from time import time
 
 TIPOS = [ (1,3), (4,6), (5,7) ]
 
@@ -28,7 +29,10 @@ def greedyRandomConstruct(types, maxSize, numBest):
 def grasp(types, maxSize, param):
     (numIter, numBest) = param
     best_state = [0 for x in range(len(types))]
+    start = time()
     for _ in range(numIter):
+        if (time() - start) > 120:
+            return best_state
         state = greedyRandomConstruct(types, maxSize, numBest)
         state = simulated_annealing_2(types, maxSize, 10, 20, 30, state)
         if stateValue(state, types) > stateValue(best_state, types):
