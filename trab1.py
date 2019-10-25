@@ -61,19 +61,29 @@ def training():
                 result = f(types, maxSize, c)
                 tempo = time() - start
                 results_per_combination.append((stateValue(result, types), tempo))
-                # print(tempo)
-                # print(result, name)
-                # print("Custo da solução: "+str(stateSize(result, types))+", Valor da solução: "+str(stateValue(result, types)))
-            #print(results)
             results_per_heuristic.append(results_per_combination)
-        # print(name)
-        #print(results_per_heuristic)
+
         results_per_problem = list(zip(*results_per_heuristic))
-        print(results_per_problem[0])
         best_value = 0
         best_time = 100000
-        
-        #AGORA PARA CADA ITEM DE RESULTS_PER_PROBLEM, NORMALIZAR OS VALORES E ARMAZENAR OS NORMALIZADOS EM NOVO VETOR
+        results_normalized_per_problem = []
+        for p in results_per_problem:
+            best_value = 0
+            best_time = 100000
+            results_normalized = []
+            for r in p: 
+                if r[0] > best_value:
+                    best_value = r[0]
+                if r[1] < best_time:
+                    best_time = r[1]
+            for r in p:
+                normal_value = r[0]/best_value
+                normal_time = r[1]/best_time
+                results_normalized.append(list((normal_value, normal_time)))
+            results_normalized_per_problem.append(results_normalized)
+        for i in results_normalized_per_problem:
+            print(i)
+
         
             
 
