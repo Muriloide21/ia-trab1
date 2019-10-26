@@ -14,11 +14,34 @@ def probability(state, neighbor, types, t):
 
 def simulated_annealing(types, maxsize, param):
     (t, alpha, numiter) = param
-    best = hillClimb(TIPOS, maxsize)
+    best = hillClimb(types, maxsize, ())
+    #print(stateValue(best,types))
     state = [0 for i in types]
     t_min = t/20
     start = time()
     while t > t_min and ((time() - start) < 120): 
+        for _ in range(0, numiter):
+            neighbor = getNeighbor(state, types, maxsize)
+            if stateValue(neighbor, types) > stateValue(state, types):
+                state = neighbor
+                if stateValue(state, types) > stateValue(best, types):
+                    best = state
+            else:
+                prob = probability(state, neighbor, types, t)
+                aux = prob*100
+                if random.randint(0,100) < aux:
+                    state = neighbor
+        t = alpha*t
+    return best
+
+def simulated_annealing_test(types, maxsize, param):
+    (t, alpha, numiter) = param
+    best = hillClimb(types, maxsize, ())
+    #print(stateValue(best,types))
+    state = [0 for i in types]
+    t_min = t/20
+    start = time()
+    while t > t_min and ((time() - start) < 300): 
         for _ in range(0, numiter):
             neighbor = getNeighbor(state, types, maxsize)
             if stateValue(neighbor, types) > stateValue(state, types):

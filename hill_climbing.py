@@ -50,15 +50,44 @@ def getNeighbor(state, types, maxsize):
     return neighbor
 
 def hillClimb(types, max_size, param):
-    _ = param
+    #_ = param
     state = [0 for i in types]
     start = time()
+    bestState = state
+    while (time() - start) < 120:
+
+        newStates = expandState(state)
+        validStates = list(
+            filter(
+                lambda x: stateIsValid(x, types, max_size),
+                newStates,
+            )
+        )
+
+        if not validStates:
+            return bestState
+
+        statesWithValues = []
+        for st in validStates:
+            statesWithValues.append( (st, stateValue(st, types)) )
+
+        (bestState, _) = max( statesWithValues, key=lambda st: st[1] )
+        #print(bestState)
+
+        state = bestState
+    return bestState
+
+def hillClimb_test(types, max_size, param):
+    #_ = param
+    state = [0 for i in types]
+    start = time()
+    bestState = state
     while (time() - start) < 300:
 
         newStates = expandState(state)
         validStates = list(
             filter(
-                lambda state: stateIsValid(state, types, max_size),
+                lambda x: stateIsValid(x, types, max_size),
                 newStates,
             )
         )

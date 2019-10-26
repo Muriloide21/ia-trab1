@@ -1,12 +1,14 @@
 from hill_climbing import *
-from grasp import grasp
+from grasp import *
 from simulated_annealing import *
-from genetic import genetic
-from beam_search import beam_search
+from genetic import *
+from beam_search import *
 from itertools import product
 from time import time
 import seaborn as sns
 import matplotlib.pyplot as plt
+import statistics as st
+from tabulate import tabulate
 
 TRAIN = [
     (19, [(1,3),(4,6),(5,7)]),
@@ -47,6 +49,13 @@ METAHEURISTICS = [
     ("Genetic", genetic, [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]])
 ]
 
+TEST_METAHEURISTICS = [
+    ("Hill Climbing", hillClimb_test),
+    ("Beam Search", beam_search_test),
+    ("Simulated Annealing", simulated_annealing_test),
+    ("GRASP", grasp_test),
+    ("Genetic", genetic_test)
+]
 
 TRAINED_HYPERPARAMETERS = []
 
@@ -116,7 +125,7 @@ def training():
         save_plot(name, data, x_labels)
 
         # print("---------------------------------------------")
-        import statistics as st
+        
         mean_combinations = []
         for rc in results_normalized_per_combination:
             mean_combinations.append(st.mean(list(map(lambda x:x[0],rc))))
@@ -127,26 +136,111 @@ def training():
         sorted_means = sorted(mean_normalized_per_combination)[-10:]
         #print(sorted_means)
 
-    print(TRAINED_HYPERPARAMETERS)
+    #print(TRAINED_HYPERPARAMETERS)
 
 def test():
-    results_per_problem = []
-    for h in METAHEURISTICS[1:2]:
+    results = []
+    names = []
+    mean_value_per_heuristic = []
+    stdev_value_per_heuristic = []
+    mean_time_per_heuristic = []
+    stdev_time_per_heuristic = []
+    for h in METAHEURISTICS[1:3]:       # Para cada Meta-heuristicas
         name = h[0]
+        names.append(h[0])
         f = h[1]
         if(name == "Hill Climbing"):
             param = ()
         else:
             param = TRAINED_HYPERPARAMETERS.pop(0)
         results_per_heuristic = []
-        for t in TEST:
+        for t in TEST:                  # Para cada problema do conjunto de teste       
             maxSize = t[0]
             types = t[1]
             start = time()
-            result = f(types, maxSize, param)
+            result = f(types, maxSize, param) # Execução do algoritmo
             tempo = time() - start
             results_per_heuristic.append((stateValue(result,types), tempo))
-        # results_
-        # results_per_problem = list(zip(*results_per_heuristic))
+            #print(maxSize)
+            #print(name+" - Custo da solução: "+str(stateSize(result, types))+", Valor da solução: "+str(stateValue(result, types)))
 
-training()
+        # Calculando média e desvio padrão dos resultados e tempos de execução
+        results.append(results_per_heuristic.copy())
+        results_per_heuristic_values = list(map(lambda x:x[0],results_per_heuristic))
+        #print(results_per_heuristic_values)
+        results_per_heuristic_times = list(map(lambda x:x[1],results_per_heuristic))
+        # Média dos resultados 
+        mean_value = st.mean(results_per_heuristic_values)
+        mean_value_per_heuristic.append(mean_value)
+        # Desvio Padrão dos resultados
+        stdev_value = st.stdev(results_per_heuristic_values)
+        stdev_value_per_heuristic.append(stdev_value)
+        # Média dos tempos de execução
+        mean_time = st.mean(results_per_heuristic_times)
+        mean_time_per_heuristic.append(mean_time)
+        # Desvio Padrão dos tempos de execução
+        stdev_time = st.stdev(results_per_heuristic_times)   
+        stdev_time_per_heuristic.append(stdev_time)         
+    
+    # Normalizando resultados por problema
+    results_per_problem = list(zip(*results))
+    # for r in results_per_problem:
+    #     print(r)
+    results_normalized_per_problem = []
+    for r in results_per_problem:
+        #print(r)
+        best_value = 0
+        best_time = 100000
+        results_normalized = []
+        for rh in r:
+            #print(rh[0])
+            if rh[0] > best_value:
+                best_value = rh[0]
+        for rh in r:
+            normal_value = rh[0]/best_value
+            results_normalized.append((normal_value, rh[1]))
+        results_normalized_per_problem.append(results_normalized)
+    # for rn in results_normalized_per_problem:
+    #     print(rn)
+    results_normalized_per_heuristic = list(zip(*results_normalized_per_problem))
+    # for r in results_normalized_per_heuristic:
+    #     print(r)
+    mean_results_normalized_per_heuristic = []
+    stdev_results_normalized_per_heuristic = []
+    # mean_times_per_heuristic = []
+    # stdev_times_per_heuristic = []
+    for r in results_normalized_per_heuristic:
+        normalized_values_per_heuristic = list(map(lambda x:x[0], r))
+        # times_per_heuristic = list(map(lambda x:x[1], r))
+        mean_results_normalized_per_heuristic.append(st.mean(normalized_values_per_heuristic))
+        stdev_results_normalized_per_heuristic.append(st.stdev(normalized_values_per_heuristic))
+        # mean_times_per_heuristic.append(st.mean(times_per_heuristic))
+        # stdev_times_per_heuristic.append(st.stdev(times_per_heuristic))
+    # print(mean_results_normalized_per_heuristic)
+    # print(stdev_results_normalized_per_heuristic)
+    # print(mean_times_per_heuristic)
+    # print(stdev_times_per_heuristic)
+
+    # Gerando Tabela
+    table = []
+    for i in range(len(TEST_METAHEURISTICS[1:3])):
+        table.append([names[i], mean_time_per_heuristic[i], stdev_value_per_heuristic[i],
+                     mean_time_per_heuristic[i], stdev_time_per_heuristic[i], 
+                     mean_results_normalized_per_heuristic[i], stdev_results_normalized_per_heuristic[i]]
+                    )
+        # table.append(mean_value_per_heuristic)
+        # table.append(stdev_value_per_heuristic)
+        # table.append(mean_time_per_heuristic)
+        # table.append(stdev_time_per_heuristic)
+        # table.append(mean_results_normalized_per_heuristic)
+        # table.append(stdev_results_normalized_per_heuristic)
+    header = ['Metaheurística',
+    'Média Absoluta','DP Absoluta',
+    'Média do Tempo','DP do Tempo',
+    'Média Normalizada','DP Normalizada']
+    print(tabulate(table,header,stralign="center",numalign="center",tablefmt="latex"))
+
+# training()
+# print(TRAINED_HYPERPARAMETERS)
+TRAINED_HYPERPARAMETERS = [(100,), (50, 0.85, 350)]
+test()
