@@ -49,10 +49,11 @@ def getNeighbor(state, types, maxsize):
 
     return neighbor
 
-def hillClimb(types, max_size):
+def hillClimb(types, max_size, param):
+    _ = param
     state = [0 for i in types]
     start = time()
-    while (time() - start) < 120:
+    while (time() - start) < 300:
 
         newStates = expandState(state)
         validStates = list(
@@ -63,7 +64,7 @@ def hillClimb(types, max_size):
         )
 
         if not validStates:
-            return state
+            return bestState
 
         statesWithValues = []
         for st in validStates:
@@ -73,9 +74,10 @@ def hillClimb(types, max_size):
         #print(bestState)
 
         state = bestState
+    return bestState
 
 
-if __name__ == "__main__":
-    result = hillClimb(TIPOS, 19)
-    print(result)
-    print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
+# if __name__ == "__main__":
+#     result = hillClimb(TIPOS, 19)
+#     print(result)
+#     print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))

@@ -4,12 +4,16 @@ from genetic import *
 import random
 import math
 from time import time
+from deepest_descent import deepest_descent_2
 
 TIPOS = [ (1,3), (4,6), (5,7) ]
 
-def greedyRandomConstruct(types, maxSize, numBest):
+def greedyRandomConstruct(types, maxSize, numBest, tempo):
+    start = tempo
     state = [0 for x in range(len(types))] # [0 0 0]
     while True:
+        if (time() - start) > 120:
+            return state
         validStates = []
         expandedStates = expandState(state)
         validStates = list(
@@ -33,8 +37,11 @@ def grasp(types, maxSize, param):
     for _ in range(numIter):
         if (time() - start) > 120:
             return best_state
-        state = greedyRandomConstruct(types, maxSize, numBest)
-        state = simulated_annealing_2(types, maxSize, 10, 20, 30, state)
+        state = greedyRandomConstruct(types, maxSize, numBest, start)
+        if (time() - start) > 120:
+            return best_state
+        state = deepest_descent_2(types, maxSize, state)
+
         if stateValue(state, types) > stateValue(best_state, types):
             best_state = state
     return best_state

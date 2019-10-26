@@ -47,21 +47,26 @@ METAHEURISTICS = [
     ("Genetic", genetic, [[10, 20, 30], [0.75, 0.85, 0.95], [0.10, 0.20, 0.30]])
 ]
 
+
+TRAINED_HYPERPARAMETERS = []
+
 def save_plot(filename,data,x_labels):
     fig = plt.figure() #Create the figure
     
     graph = sns.boxplot(data=data,showmeans=True) #Do the boxplot
     graph.set_xticklabels(x_labels) #Label the x axe
+    plt.setp(graph.get_xticklabels(),rotation = 45)
 
     if len(data) >= 10:
         fig.set_size_inches(14,5) #Set the size to fit all boxplots
         sns.set(font_scale=0.8) #Shrink the fontsize of the label
     
-    fig.savefig(f'graficos/{filename}.eps', dpi=fig.dpi)
+    fig.savefig('graficos/{filename}.eps', dpi=fig.dpi)
 
 def training():
+    #print("Hello World")
     hyperparameters = []
-    for h in METAHEURISTICS[1:4]:
+    for h in METAHEURISTICS[1:3]:
         name = h[0]
         f = h[1]
         combinations = list(product(*h[2]))
@@ -69,7 +74,7 @@ def training():
         results_per_problem = []
         for c in combinations:
             results_per_combination = []
-            for t in TRAIN:
+            for t in TRAIN[:8]:
                 maxSize = t[0]
                 types = t[1]
                 start = time()
@@ -106,10 +111,9 @@ def training():
             (list(map(lambda result: result[0],comb_results)),combinations[i_comb])
             for i_comb,comb_results in enumerate(results_normalized_per_combination)
         ]
-        #print('\n\n\n\n',combination_normalized_results,end='\n\n\n')
 
         data,x_labels = list(zip(*combination_normalized_results))
-        save_plot("nha", data, x_labels)
+        save_plot(name, data, x_labels)
 
         # print("---------------------------------------------")
         import statistics as st
@@ -118,20 +122,31 @@ def training():
             mean_combinations.append(st.mean(list(map(lambda x:x[0],rc))))
         #print(mean_combinations)
         mean_normalized_per_combination = list(zip(mean_combinations, combinations))
-        # print(mean_normalized_per_combination)
-        # print(max(mean_normalized_per_combination))
-        hyperparameters.append(max(mean_normalized_per_combination))
+        TRAINED_HYPERPARAMETERS.append(max(mean_normalized_per_combination)[1])
         print(max(mean_normalized_per_combination))
         sorted_means = sorted(mean_normalized_per_combination)[-10:]
         #print(sorted_means)
 
-    print(hyperparameters)
+    print(TRAINED_HYPERPARAMETERS)
 
-
-
-
-
-        
-            
+def test():
+    results_per_problem = []
+    for h in METAHEURISTICS[1:2]:
+        name = h[0]
+        f = h[1]
+        if(name == "Hill Climbing"):
+            param = ()
+        else:
+            param = TRAINED_HYPERPARAMETERS.pop(0)
+        results_per_heuristic = []
+        for t in TEST:
+            maxSize = t[0]
+            types = t[1]
+            start = time()
+            result = f(types, maxSize, param)
+            tempo = time() - start
+            results_per_heuristic.append((stateValue(result,types), tempo))
+        # results_
+        # results_per_problem = list(zip(*results_per_heuristic))
 
 training()
