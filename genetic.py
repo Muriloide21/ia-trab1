@@ -27,9 +27,9 @@ def bestStates(statesList, types, k):
 def genetic(types, maxSize, params): #maxGen, populationSize):
     (populationSize, crossRate, mutationRate) = params
     population = [randomState(types, maxSize) for x in range(populationSize)]
-    inert = 0
+    maxGen = 0
     start = time()
-    while inert < 5 and ((time() -start) < 120):
+    while (maxGen < 50) and ((time() -start) < 120):
         elit = 1
         best_States = bestStates(population.copy(), types, elit)
 
@@ -82,10 +82,11 @@ def genetic(types, maxSize, params): #maxGen, populationSize):
         parentStates.reverse()
 
         values = [stateValue(x, types) for x in population]
-        if max(values) >= max(parentValues):
-            inert = 0
-        else:
-            inert += 1
+        # if max(values) >= max(parentValues):
+        #     inert = 0
+        # else:
+        #     inert += 1
+        maxGen += 1
 
     best_States = bestStates(population, types, 1)
     #print("Best States:", best_States)
@@ -94,9 +95,9 @@ def genetic(types, maxSize, params): #maxGen, populationSize):
 def genetic_test(types, maxSize, params): #maxGen, populationSize):
     (populationSize, crossRate, mutationRate) = params
     population = [randomState(types, maxSize) for x in range(populationSize)]
-    inert = 0
+    maxGen = 0
     start = time()
-    while inert < 5 and ((time() -start) < 300):
+    while (maxGen < 50) and ((time() -start) < 300):
         elit = 1
         best_States = bestStates(population.copy(), types, elit)
 
@@ -149,10 +150,11 @@ def genetic_test(types, maxSize, params): #maxGen, populationSize):
         parentStates.reverse()
 
         values = [stateValue(x, types) for x in population]
-        if max(values) >= max(parentValues):
-            inert = 0
-        else:
-            inert += 1
+        # if max(values) >= max(parentValues):
+        #     inert = 0
+        # else:
+        #     inert += 1
+        maxGen += 1
 
     best_States = bestStates(population, types, 1)
     #print("Best States:", best_States)

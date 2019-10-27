@@ -1,4 +1,5 @@
 from hill_climbing import * 
+from grasp import *
 import random
 import math
 from time import time
@@ -14,7 +15,7 @@ def probability(state, neighbor, types, t):
 
 def simulated_annealing(types, maxsize, param):
     (t, alpha, numiter) = param
-    best = hillClimb(types, maxsize, ())
+    best = greedyRandomConstruct(types, maxsize, 2, 0)
     #print(stateValue(best,types))
     state = [0 for i in types]
     t_min = t/20
@@ -36,11 +37,11 @@ def simulated_annealing(types, maxsize, param):
 
 def simulated_annealing_test(types, maxsize, param):
     (t, alpha, numiter) = param
-    best = hillClimb(types, maxsize, ())
+    start = time()
+    best = greedyRandomConstruct_test(types, maxsize, 2, start)
     #print(stateValue(best,types))
     state = [0 for i in types]
     t_min = t/20
-    start = time()
     while t > t_min and ((time() - start) < 300): 
         for _ in range(0, numiter):
             neighbor = getNeighbor(state, types, maxsize)

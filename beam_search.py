@@ -115,10 +115,10 @@ def beam_search_test(types, max_size, param):
         #print(f)
     return best
 
-if __name__ == "__main__":
-    result = beam_search(TIPOS, 19, (2,))
-    print(result)
-    print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
+# if __name__ == "__main__":
+#     result = beam_search(TIPOS, 19, (2,))
+#     print(result)
+#     print("Custo da solução: "+str(stateSize(result, TIPOS))+", Valor da solução: "+str(stateValue(result, TIPOS)))
     
 
 

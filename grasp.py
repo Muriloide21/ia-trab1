@@ -1,5 +1,4 @@
 from hill_climbing import * 
-from simulated_annealing import *
 from genetic import *
 import random
 import math
@@ -26,7 +25,7 @@ def greedyRandomConstruct(types, maxSize, numBest, tempo):
         if not validStates:
             return state
         
-        kbestStates = bestStates(validStates, types, numBest) #Tá dando erro aqui pq numBest pode ser maior que o tamanho da lista de melhores
+        kbestStates = bestStates(validStates, types, numBest)
         choice = random.randint(0, len(kbestStates)-1)
         state = kbestStates[choice]
 
@@ -38,6 +37,8 @@ def grasp(types, maxSize, param):
         if (time() - start) > 120:
             return best_state
         state = greedyRandomConstruct(types, maxSize, numBest, start)
+        if stateValue(state, types) > stateValue(best_state, types):
+            best_state = state
         if (time() - start) > 120:
             return best_state
         state = deepest_descent_2(types, maxSize, state)
@@ -64,7 +65,7 @@ def greedyRandomConstruct_test(types, maxSize, numBest, tempo):
         if not validStates:
             return state
         
-        kbestStates = bestStates(validStates, types, numBest) #Tá dando erro aqui pq numBest pode ser maior que o tamanho da lista de melhores
+        kbestStates = bestStates(validStates, types, numBest) #PROBLEMAS COM NUMBEST > 2
         choice = random.randint(0, len(kbestStates)-1)
         state = kbestStates[choice]
 
