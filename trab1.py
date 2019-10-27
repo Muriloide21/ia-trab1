@@ -55,25 +55,23 @@ TEST_METAHEURISTICS = [
 TRAINED_HYPERPARAMETERS = []
 
 def save_plot(filename,data,x_labels):
-    fig = plt.figure() #Create the figure
-    
-    graph = sns.boxplot(data=data,showmeans=True) #Do the boxplot
-    graph.set_xticklabels(x_labels) #Label the x axe
+    fig = plt.figure()
+    graph = sns.boxplot(data=data,showmeans=True)
+    graph.set_xticklabels(x_labels)
     plt.setp(graph.get_xticklabels(),rotation = 15)
 
     if len(data) >= 10:
-        fig.set_size_inches(14,5) #Set the size to fit all boxplots
-        sns.set(font_scale=0.8) #Shrink the fontsize of the label
+        fig.set_size_inches(14,5)
+        sns.set(font_scale=0.8) 
     
     fig.savefig('graficos/'+filename+'.eps', dpi=fig.dpi)
 
 def training():
     hyperparameters = []
-    for h in METAHEURISTICS[4:]:
+    for h in METAHEURISTICS[1:]:
         name = h[0]
         f = h[1]
         combinations = list(product(*h[2]))
-        #print(combinations)
         results_per_heuristic = []
         results_per_problem = []
         for c in combinations:
@@ -103,30 +101,23 @@ def training():
                 normal_value = r[0]/best_value
                 results_normalized.append(list((normal_value, r[1])))
             results_normalized_per_problem.append(results_normalized)
-        # for i in results_normalized_per_problem:
-        #     print(i)
         results_normalized_per_combination = list(zip(*results_normalized_per_problem))
 
-
+        # Gerar boxplot dos 10 melhores resultados normalizados alcançados pela metaheurística
         combination_normalized_results = [
             (list(map(lambda result: result[0],comb_results)),combinations[i_comb])
             for i_comb,comb_results in enumerate(results_normalized_per_combination)
         ]
-        #print(combination_normalized_results)
+        combination_normalized_results.sort(key = lambda x: sum(x[0]))
         data,x_labels = list(zip(*combination_normalized_results))
-        #print(data)
-        save_plot(name, data, x_labels)
-
-        # print("---------------------------------------------")
+        save_plot(name, data[-10:], x_labels[-10:])
         
+        # Selecionando os melhores hiperparâmetros
         mean_combinations = []
         for rc in results_normalized_per_combination:
             mean_combinations.append(st.mean(list(map(lambda x:x[0],rc))))
-        #print(mean_combinations)
         mean_normalized_per_combination = list(zip(mean_combinations, combinations))
         TRAINED_HYPERPARAMETERS.append(max(mean_normalized_per_combination)[1])
-        #print(max(mean_normalized_per_combination))
-        sorted_means = sorted(mean_normalized_per_combination)[-10:]
     print("Melhores hiperparâmetros - ", TRAINED_HYPERPARAMETERS)
         
 
@@ -238,15 +229,13 @@ def test():
     'Média Absoluta','DP Absoluta',
     'Média do Tempo','DP do Tempo',
     'Média Normalizada','DP Normalizada']
-    # DESCOMENTAR POSTERIORMENTE
+
     print(tabulate(table,header,stralign="center",numalign="center",tablefmt="latex"))
     rank_per_problem = []
     named_results_per_problem = []
     for r in results_per_problem:
         named_results = list(zip(names, list(map(lambda x:x[0],r))))
         rank_per_problem.append(ranking(named_results))
-    # for r in rank_per_problem:
-    #     print(r)
 
     # Ranqueamento das metaheurísticas segundo resultado absoluto
     named_means_positions = []
@@ -272,7 +261,6 @@ def test():
     print("Médias dos resultados normalizados: ",mean_results_normalized_per_heuristic)
 
     # Gerar boxplot dos resultados normalizados alcançados pelas metaheurísticas
-    # print(results_normalized_per_heuristic)
     values_normalized_per_heuristic = []
     times_per_heuristic = []
     for elem in results_normalized_per_heuristic:
@@ -280,12 +268,10 @@ def test():
         aux2 = list(map(lambda x: x[1], elem))
         values_normalized_per_heuristic.append(aux)
         times_per_heuristic.append(aux2)
-    # print(values_normalized_per_heuristic)
-    # print(times_per_heuristic)
-    #values_normalized_per_heuristic = list()
     data = values_normalized_per_heuristic
     labels = names
     save_plot("Normalized_results", data, labels)
+
     # Gerar boxplot dos tempos alcançados pelas metaheurísticas
     data = times_per_heuristic
     save_plot("Execution_Times", data, labels)
