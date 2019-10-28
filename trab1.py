@@ -219,7 +219,7 @@ def test():
 
     # Gerando Tabela
     table = []
-    for i in range(len(TEST_METAHEURISTICS[4:])):
+    for i in range(len(TEST_METAHEURISTICS)):
         table.append([names[i], mean_time_per_heuristic[i], stdev_value_per_heuristic[i],
             mean_time_per_heuristic[i], stdev_time_per_heuristic[i], 
             mean_results_normalized_per_heuristic[i], stdev_results_normalized_per_heuristic[i]]
@@ -279,4 +279,4 @@ def test():
 
 training()
 #TRAINED_HYPERPARAMETERS = [(100,), (50, 0.85, 350)]
-#test()
+test()
