@@ -1,0 +1,11 @@
+\begin{tabular}{ccccccc}
+\hline
+   Metaheurística    &  Média Absoluta  &  DP Absoluta  &  Média do Tempo  &  DP do Tempo  &  Média Normalizada  &  DP Normalizada  \\
+\hline
+    Hill Climbing    &    0.0293772     &    42153.3    &    0.0293772     &   0.0740045   &      0.981148       &    0.0496218     \\
+     Beam Search     &     0.27146      &     42153     &     0.27146      &   0.675714    &      0.983196       &    0.0497238     \\
+ Simulated Annealing &     1.34877      &    40848.4    &     1.34877      &   0.807068    &      0.976272       &    0.0285174     \\
+        GRASP        &     17.7638      &    40860.5    &     17.7638      &    45.4128    &      0.978692       &    0.0229681     \\
+       Genetic       &    0.0171854     &    41780.5    &    0.0171854     &  0.00292503   &      0.988748       &    0.00839405    \\
+\hline
+\end{tabular}

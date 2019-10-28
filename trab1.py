@@ -229,13 +229,16 @@ def test():
     'Média Absoluta','DP Absoluta',
     'Média do Tempo','DP do Tempo',
     'Média Normalizada','DP Normalizada']
+    file = open("tabela.txt", 'w')
+    file.write(tabulate(table,header,stralign="center",numalign="center",tablefmt="latex"))
+    file.close()
 
-    print(tabulate(table,header,stralign="center",numalign="center",tablefmt="latex"))
     rank_per_problem = []
     named_results_per_problem = []
     for r in results_per_problem:
         named_results = list(zip(names, list(map(lambda x:x[0],r))))
-        rank_per_problem.append(ranking(named_results))
+        aux = ranking(named_results)
+        rank_per_problem.append(aux)
 
     # Ranqueamento das metaheurísticas segundo resultado absoluto
     named_means_positions = []
@@ -278,5 +281,4 @@ def test():
 
 
 training()
-#TRAINED_HYPERPARAMETERS = [(100,), (50, 0.85, 350)]
 test()
